@@ -18,19 +18,33 @@ export default function App() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [chatrooms, setChatrooms] = useState([]);
 
+  const chatroomsAPI = "https://cs571api.cs.wisc.edu/rest/su24/hw9/chatrooms"
+
   useEffect(() => {
-    // hmm... maybe I should load the chatroom names here
-    setChatrooms(["Hello", "World"]) // for example purposes only!
+    fetch(chatroomsAPI, {
+        headers: {
+            "X-CS571-ID": CS571.getBadgerId() 
+        },  
+    })
+    .then(response => response.json()) 
+    .then(data => {
+        setChatrooms(data);
+    })
+    .catch(error => console.error('Error:', error));
   }, []);
 
   function handleLogin(username, pin) {
     // hmm... maybe this is helpful!
     setIsLoggedIn(true); // I should really do a fetch to login first!
+    SecureStore.setItemAsync('jwt', pin);
+    SecureStore.setItemAsync('username', username);
   }
 
   function handleSignup(username, pin) {
     // hmm... maybe this is helpful!
     setIsLoggedIn(true); // I should really do a fetch to register first!
+    SecureStore.setItemAsync('jwt', pin);
+    SecureStore.setItemAsync('username', username);
   }
 
   if (isLoggedIn) {
