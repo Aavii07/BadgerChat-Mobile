@@ -39,7 +39,7 @@ function BadgerRegisterScreen(props) {
         })
         .then(response => {
             if (response.status === 200) {
-                Alert.alert("Registration successful", "You may now enter badger chat.");
+                Alert.alert("Registration successful", "You may now enter BadgerChat.");
                 onLogin();
                 props.setIsRegistering(false);
             } else if (response.status === 409) {

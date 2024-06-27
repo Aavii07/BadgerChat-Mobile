@@ -66,7 +66,7 @@ function BadgerChatroomScreen(props) {
             }
         })
         .then(() => {
-            Alert.alert("Success", "Post successfully deleted!");
+            Alert.alert("Deleted", "Post successfully deleted!");
             loadMessages();
         })
         .catch(error => console.error('Error deleting post:', error));

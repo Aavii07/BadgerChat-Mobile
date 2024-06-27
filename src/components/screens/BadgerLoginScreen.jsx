@@ -13,7 +13,6 @@ function BadgerLoginScreen(props) {
         setPin("");
     };
     const onLogin = () => {
-        console.log(username, pin);
         if (!username || !pin) {
             Alert.alert("Missing Fields", "Please enter every field.");
             return;
@@ -31,7 +30,7 @@ function BadgerLoginScreen(props) {
         })
         .then(response => {
             if (response.status === 200) {
-                console.log("ji3");
+                Alert.alert("Login Successful", "Welcome back to BadgerChat");
                 return response.json();
             }  
             if (response.status === 401) {

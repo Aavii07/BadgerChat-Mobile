@@ -42,7 +42,6 @@ export default function App() {
     setUsername(username);
     SecureStore.setItemAsync('jwtToken', pin);
     SecureStore.setItemAsync('username', username);
-    console.log(username);
   }
 
   function handleLoginGuest() {
@@ -78,7 +77,7 @@ export default function App() {
             })
           }
           {(username) ? 
-          <ChatDrawer.Screen name="Logout">
+          <ChatDrawer.Screen name="Logout" >
             {props => (
               <BadgerLogoutScreen
                 {...props}
@@ -86,7 +85,7 @@ export default function App() {
               />
             )}
           </ChatDrawer.Screen> :
-          <ChatDrawer.Screen name="Sign up">
+          <ChatDrawer.Screen name="Sign up" >
             {props => (
               <BadgerConversionScreen
                 {...props}
