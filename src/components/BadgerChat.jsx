@@ -42,6 +42,7 @@ export default function App() {
     setUsername(username);
     SecureStore.setItemAsync('jwtToken', pin);
     SecureStore.setItemAsync('username', username);
+    console.log(username);
   }
 
   function handleLoginGuest() {
@@ -72,7 +73,7 @@ export default function App() {
           {
             chatrooms.map(chatroom => {
               return <ChatDrawer.Screen key={chatroom} name={chatroom}>
-                {(props) => <BadgerChatroomScreen name={chatroom} username={username}/>}
+                {(props) => <BadgerChatroomScreen name={chatroom} username={username} />}
               </ChatDrawer.Screen>
             })
           }

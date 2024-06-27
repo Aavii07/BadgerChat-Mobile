@@ -1,5 +1,5 @@
 import { Alert, Button, StyleSheet, Text, View, TextInput } from "react-native";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CS571 from '@cs571/mobile-client'
 import BadgerCard from '../helper/BadgerCard';
 
@@ -13,6 +13,8 @@ function BadgerLoginScreen(props) {
         setPin("");
     };
     const onLogin = () => {
+        console.log("onLogin");
+        console.log(username, pin);
         if (!username || !pin) {
             Alert.alert("Missing Fields", "Please enter every field.");
             return;
@@ -29,7 +31,9 @@ function BadgerLoginScreen(props) {
                 "pin" : pin })
         })
         .then(response => {
+            console.log("qeubof");
             if (response.status === 200) {
+                console.log("ji3");
                 return response.json();
             }  
             if (response.status === 401) {
@@ -42,6 +46,7 @@ function BadgerLoginScreen(props) {
         })
         .then(data => {
             if (data && data?.token) {
+                console.log("ji");
                 props.handleLogin(username, data.token);
             }
         })

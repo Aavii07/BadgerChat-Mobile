@@ -11,6 +11,7 @@ function BadgerChatroomScreen(props) {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     const [jwtToken, setJwtToken] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     const messagesAPI = `https://cs571api.cs.wisc.edu/rest/su24/hw9/messages?chatroom=${props.name}`;
 
     const loadMessages = () => {
@@ -20,7 +21,9 @@ function BadgerChatroomScreen(props) {
             }
         }).then(res => res.json()).then(json => {
             setMessages(json.messages)
-        })
+        }).finally(() => {
+            setRefreshing(false);
+        });
     };
     useEffect(() => {
         SecureStore.getItemAsync('jwtToken').then(token => {
@@ -50,8 +53,7 @@ function BadgerChatroomScreen(props) {
                 setBody('');
                 loadMessages();   
             })
-            .catch(error => 
-                console.error('Error creating post', error));
+            .catch(error => console.error('Error creating post', error)); 
         }
     };
 
@@ -76,14 +78,21 @@ function BadgerChatroomScreen(props) {
         setBody('');
     };
 
+    const refresh = () => {
+        setRefreshing(true);
+        loadMessages(); 
+    };
+
     return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, width: '100%' }}>
         <View style={styles.container}>
             <FlatList
                 data={messages}
+                refreshing={refreshing} 
+                onRefresh={refresh}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
-                        <View>
+                        <View style={{width: '100%'}}>
                             <View style={{marginBottom: 5}}>
                                 <BadgerChatMessage
                                     title={item.title}
@@ -93,10 +102,11 @@ function BadgerChatroomScreen(props) {
                                 />
                             </View>
                             {props.username === item.poster && (
-                                <View style = {{alignItems: 'center', width: '100%'}}>
+                                <View style = {{ width: '95%', alignSelf: 'center'}}>
                                     <Button title="Delete Post" 
                                     onPress={() => deletePost(item.id)} 
-                                    color="red"/>
+                                    color="red"
+                                    style={{ width: '100%', borderRadius: 20 }}/>
                                 </View>
                             )}
                         </View>
@@ -105,10 +115,12 @@ function BadgerChatroomScreen(props) {
                     <Text style={styles.headerText}> BadgerChat Messages </Text>
                 )}
             />
-            <View style={{width: '100%'}}> 
-                <Button title="Create Post" style={{width: '100%'}} 
-                onPress={() => setModalVisible(true)} />
-            </View>
+            {props.username && (  
+                <View style={{width: '100%'}}> 
+                    <Button title="Create Post" style={{width: '100%'}} 
+                    onPress={() => setModalVisible(true)} />
+                </View>
+            )}
             
         </View>
         <Modal
@@ -117,21 +129,20 @@ function BadgerChatroomScreen(props) {
             visible={modalVisible}
             onRequestClose={() => {
                 setModalVisible(!modalVisible);
-            }}
-        >
+            }}>
             <View style={styles.modalContainer}>
                 <BadgerCard
                     style={styles.badgerCard}>
                     <Text style={styles.headerText}>Create a Post</Text>
                     <View style={styles.modalContent}>
                         <TextInput
-                            style={[styles.textInputBorder, { marginBottom: 10 }]}
+                            style={[styles.textInputBorder, { marginBottom: 10, width: '100%' }]}
                             placeholder="Enter a title"
                             onChangeText={setTitle}
                             value={title}
                         />
                         <ScrollView
-                            style={[styles.textInputBorder, {maxHeight : 100, marginBottom: 25}]}>
+                            style={[styles.textInputBorder, {maxHeight : 100, marginBottom: 25, width: '100%'}, ]}>
                             <TextInput
                                 style={{ marginBottom: 100 }}
                                 placeholder="Enter a body"
@@ -169,7 +180,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     modalContainer: {
-        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
@@ -177,10 +187,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
     modalContent: {
-        flex: 1,
         padding: 20,
         borderRadius: 10,
-        width: '80%',
+        width: '100%',
         alignItems: 'center',
     },
     badgerCard : {
