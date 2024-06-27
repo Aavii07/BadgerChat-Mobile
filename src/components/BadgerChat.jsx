@@ -17,6 +17,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false);
   const [chatrooms, setChatrooms] = useState([]);
+  const [username, setUsername] = useState(null); // hold username to pass down and check for your own posts
 
   const chatroomsAPI = "https://cs571api.cs.wisc.edu/rest/su24/hw9/chatrooms"
 
@@ -34,17 +35,30 @@ export default function App() {
   }, []);
 
   function handleLogin(username, pin) {
-    // hmm... maybe this is helpful!
-    setIsLoggedIn(true); // I should really do a fetch to login first!
-    SecureStore.setItemAsync('jwt', pin);
+    // called after fetch
+    setIsLoggedIn(true); 
+    setUsername(username);
+    SecureStore.setItemAsync('jwtToken', pin);
     SecureStore.setItemAsync('username', username);
   }
 
+  function handleLoginGuest() {
+    setIsLoggedIn(true);
+  }
+
   function handleSignup(username, pin) {
-    // hmm... maybe this is helpful!
-    setIsLoggedIn(true); // I should really do a fetch to register first!
-    SecureStore.setItemAsync('jwt', pin);
+    // called after fetch
+    setIsLoggedIn(true); 
+    setUsername(username);
+    SecureStore.setItemAsync('jwtToken', pin);
     SecureStore.setItemAsync('username', username);
+  }
+
+  function handleLogout() {
+    setIsLoggedIn(false);
+    setUsername("");
+    SecureStore.deleteItemAsync('jwtToken');
+    SecureStore.deleteItemAsync('username');
   }
 
   if (isLoggedIn) {
@@ -55,9 +69,15 @@ export default function App() {
           {
             chatrooms.map(chatroom => {
               return <ChatDrawer.Screen key={chatroom} name={chatroom}>
-                {(props) => <BadgerChatroomScreen name={chatroom} />}
+                {(props) => <BadgerChatroomScreen name={chatroom} username={username}/>}
               </ChatDrawer.Screen>
             })
+          }
+          {(username) ? 
+          <ChatDrawer.Screen name="Logout">
+            {handleLogout}
+          </ChatDrawer.Screen> :
+          <ChatDrawer.Screen name="Sign up" component={BadgerRegisterScreen}/>
           }
         </ChatDrawer.Navigator>
       </NavigationContainer>
@@ -65,6 +85,6 @@ export default function App() {
   } else if (isRegistering) {
     return <BadgerRegisterScreen handleSignup={handleSignup} setIsRegistering={setIsRegistering} />
   } else {
-    return <BadgerLoginScreen handleLogin={handleLogin} setIsRegistering={setIsRegistering} />
+    return <BadgerLoginScreen handleLogin={handleLogin} setIsRegistering={setIsRegistering} handleLoginGuest={handleLoginGuest} />
   }
 }

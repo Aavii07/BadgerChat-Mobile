@@ -29,7 +29,9 @@ function BadgerLoginScreen(props) {
                 'Content-Type': 'application/json',
                 "X-CS571-ID": CS571.getBadgerId() 
             },
-            body: JSON.stringify({ username, pin })
+            body: JSON.stringify({ 
+                "username" : username, 
+                "pin" : pin })
         })
         .then(response => {
             if (response.status === 200) {
@@ -50,6 +52,25 @@ function BadgerLoginScreen(props) {
         })
         .catch(error => console.error('Login Error:', error));
     };
+
+    const onLoginGuest = () => {
+        fetch(loginAPI, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "X-CS571-ID": CS571.getBadgerId() 
+            },
+            body: JSON.stringify({ 
+                "username" : null, 
+                "pin" : null })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("nce");
+            props.handleLoginGuest();
+        })
+        .catch(error => console.error('Login Error:', error));
+    }
     
     const onRegister = () => {
         if (!username || !pin || !confirmPin) {
@@ -73,7 +94,9 @@ function BadgerLoginScreen(props) {
                 'Content-Type': 'application/json',
                 "X-CS571-ID": CS571.getBadgerId() 
             },
-            body: JSON.stringify({ username, pin })
+            body: JSON.stringify({ 
+                "username" : username, 
+                "pin" : pin })
         })
         .then(response => {
             if (response.status === 200) {
@@ -103,7 +126,7 @@ function BadgerLoginScreen(props) {
                     placeholder="Username"
                     value={username}
                     onChangeText={setUsername}
-                    style = {{marginBottom: 40, marginTop: 40}} 
+                    style={[styles.textInputBorder, { marginBottom: 40, marginTop: 40 }]}
                 />
                 <TextInput
                     placeholder="Pin"
@@ -112,7 +135,7 @@ function BadgerLoginScreen(props) {
                     secureTextEntry={true}
                     value={pin}
                     onChangeText={setPin}
-                    style = {{marginBottom: 40}} 
+                    style = { [styles.textInputBorder, {marginBottom: 40}]} 
                 />
                 {isRegistering && (
                     <TextInput
@@ -122,7 +145,7 @@ function BadgerLoginScreen(props) {
                         keyboardType="number-pad"
                         value={confirmPin}
                         onChangeText={setConfirmPin}
-                        style = {{marginBottom: 40}} 
+                        style = { [styles.textInputBorder, {marginBottom: 40}]} 
                     />
                 )}
                 <Button
@@ -147,6 +170,15 @@ function BadgerLoginScreen(props) {
                         clearInputs();
                     }}
                 />
+                {!isRegistering && 
+                <View style={{marginTop: 40}}>
+                    <Button
+                        color="grey"
+                        style={{borderRadius: 40}}
+                        title="Continue as Guest"
+                        onPress={onLoginGuest}
+                    />
+                </View>}
             </BadgerCard>
         </View>
     );
@@ -158,6 +190,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    textInputBorder: {
+        borderWidth: 1,      
+        borderColor: '#ccc',  
+        borderRadius: 10,
+        padding: 10,     
     }
 });
 
