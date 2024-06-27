@@ -5,8 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import CS571 from '@cs571/mobile-client'
 import * as SecureStore from 'expo-secure-store';
 import BadgerChatroomScreen from './screens/BadgerChatroomScreen';
-import BadgerRegisterScreen from './screens/BadgerRegisterScreen';
-import BadgerLoginScreen from './screens/BadgerLoginScreen';
+import BadgerRegisterScreen from './screens/BadgerRegisterScreen'; // used just for when being redirected as guest
+import BadgerLoginScreen from './screens/BadgerLoginScreen'; // login and register screens are here
 import BadgerLandingScreen from './screens/BadgerLandingScreen';
 
 
@@ -17,7 +17,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false);
   const [chatrooms, setChatrooms] = useState([]);
-  const [username, setUsername] = useState(null); // hold username to pass down and check for your own posts
+  const [username, setUsername] = useState(""); // hold username to pass down and check for your own posts
 
   const chatroomsAPI = "https://cs571api.cs.wisc.edu/rest/su24/hw9/chatrooms"
 
@@ -44,6 +44,7 @@ export default function App() {
 
   function handleLoginGuest() {
     setIsLoggedIn(true);
+    setUsername("");
   }
 
   function handleSignup(username, pin) {
@@ -75,15 +76,30 @@ export default function App() {
           }
           {(username) ? 
           <ChatDrawer.Screen name="Logout">
-            {handleLogout}
+            {props => (
+              <BadgerLoginScreen
+                {...props}
+                handleLogout={handleLogout}
+              />
+            )}
           </ChatDrawer.Screen> :
-          <ChatDrawer.Screen name="Sign up" component={BadgerRegisterScreen}/>
-          }
+          <ChatDrawer.Screen name="Sign up">
+            {props => (
+              <BadgerRegisterScreen
+                {...props}
+                setIsRegistering={setIsRegistering}
+                setIsLoggedIn={setIsLoggedIn}
+                showConversion={true}
+              />
+            )}
+          </ChatDrawer.Screen>
+              
+        } 
         </ChatDrawer.Navigator>
       </NavigationContainer>
     );
   } else if (isRegistering) {
-    return <BadgerRegisterScreen handleSignup={handleSignup} setIsRegistering={setIsRegistering} />
+    return <BadgerRegisterScreen handleSignup={handleSignup} handleLogin={handleLogin} setIsRegistering={setIsRegistering} />
   } else {
     return <BadgerLoginScreen handleLogin={handleLogin} setIsRegistering={setIsRegistering} handleLoginGuest={handleLoginGuest} />
   }
