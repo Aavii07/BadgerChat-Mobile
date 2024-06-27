@@ -8,13 +8,6 @@ function BadgerLoginScreen(props) {
     const [pin, setPin] = useState("");
     const loginAPI = "https://cs571api.cs.wisc.edu/rest/su24/hw9/login"
 
-    useEffect(() => {
-        // run this function if it exists on initial render (it exists when logging out)
-        if (typeof props.handleLogout === 'function') { 
-            props.handleLogout();
-        }
-    }, []);
-
     const clearInputs = () => {
         setUsername("");
         setPin("");

@@ -89,20 +89,7 @@ function BadgerRegisterScreen(props) {
         setConfirmPin("");
     };
 
-    return (props.showConversion ? 
-        <View style={styles.container}>
-            <Text style={{ fontSize: 36 }}>Join BadgerChat!</Text>
-            <Button color="crimson" title="Signup" 
-            onPress={() => {
-                props.setIsLoggedIn(false);
-                props.setIsRegistering(true);
-            }}/>
-            <Button color="grey" title="Nevermind!" 
-            onPress={() => {
-                props.setIsRegistering(false);
-                props.setIsLoggedIn(false);
-            }}/>
-        </View> :
+    return (
         <View style={styles.container}>
         <BadgerCard>
             <Text style={{ fontSize: 36, marginBottom: 20 }}>BadgerChat Register </Text>

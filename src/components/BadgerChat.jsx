@@ -8,6 +8,8 @@ import BadgerChatroomScreen from './screens/BadgerChatroomScreen';
 import BadgerRegisterScreen from './screens/BadgerRegisterScreen'; // used just for when being redirected as guest
 import BadgerLoginScreen from './screens/BadgerLoginScreen'; // login and register screens are here
 import BadgerLandingScreen from './screens/BadgerLandingScreen';
+import BadgerConversionScreen from './screens/BadgerConversionScreen';
+import BadgerLogoutScreen from './screens/BadgerLogoutScreen';
 
 
 const ChatDrawer = createDrawerNavigator();
@@ -77,7 +79,7 @@ export default function App() {
           {(username) ? 
           <ChatDrawer.Screen name="Logout">
             {props => (
-              <BadgerLoginScreen
+              <BadgerLogoutScreen
                 {...props}
                 handleLogout={handleLogout}
               />
@@ -85,11 +87,10 @@ export default function App() {
           </ChatDrawer.Screen> :
           <ChatDrawer.Screen name="Sign up">
             {props => (
-              <BadgerRegisterScreen
+              <BadgerConversionScreen
                 {...props}
                 setIsRegistering={setIsRegistering}
                 setIsLoggedIn={setIsLoggedIn}
-                showConversion={true}
               />
             )}
           </ChatDrawer.Screen>
