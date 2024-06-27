@@ -13,7 +13,6 @@ function BadgerLoginScreen(props) {
         setPin("");
     };
     const onLogin = () => {
-        console.log("onLogin");
         console.log(username, pin);
         if (!username || !pin) {
             Alert.alert("Missing Fields", "Please enter every field.");
@@ -24,14 +23,13 @@ function BadgerLoginScreen(props) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                "X-CS571-ID": CS571.getBadgerId() 
+                "X-CS571-ID": "bid_563a80b242a6985543699e1155b894675b0cc40fd703cba3b79f2437faeff630"
             },
             body: JSON.stringify({ 
                 "username" : username, 
                 "pin" : pin })
         })
         .then(response => {
-            console.log("qeubof");
             if (response.status === 200) {
                 console.log("ji3");
                 return response.json();
@@ -46,7 +44,6 @@ function BadgerLoginScreen(props) {
         })
         .then(data => {
             if (data && data?.token) {
-                console.log("ji");
                 props.handleLogin(username, data.token);
             }
         })
